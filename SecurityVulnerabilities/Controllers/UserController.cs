@@ -10,6 +10,25 @@ namespace SecurityVulnerabilities.Controllers
 {
     public class UserController : Controller
     {
+        private List<User> allUsers;
+
+        public UserController()
+        {
+            allUsers = new List<User>();
+            var user = new User();
+            user.username = "neko";
+            user.password = "nekiiic";
+            allUsers.Add(user);
+
+            user.username = "medi";
+            user.password = "sifraaa123";
+            allUsers.Add(user);
+
+            user.username = "john doe";
+            user.password = "password123";
+            allUsers.Add(user);
+
+        }
         // GET: User
         public ActionResult Index()
         {
@@ -23,6 +42,26 @@ namespace SecurityVulnerabilities.Controllers
             userInfo.username = "medii";
             userInfo.password = "nekiPassword123";
             return View("Index", userInfo);
+        }
+
+        // POST: User/Login
+        [HttpPost]
+        public ActionResult Login(IFormCollection data)
+        {
+            var username = data.Select(x => x.Value).Where(y => y =="username").FirstOrDefault();
+            var password = data.Select(x => x.Value).Where(y => y == "password").FirstOrDefault();
+
+            bool doesUserExists = allUsers.Any(x => x.username == username && x.password == password);
+
+            if (doesUserExists)
+            {
+                var user = allUsers.Find(x => x.username == username && x.password == password);
+                return View("Index", user);
+            }
+            else
+                return View("~/Views/Shared/Error.cshtml");
+          
+           
         }
 
         // GET: User/Create
